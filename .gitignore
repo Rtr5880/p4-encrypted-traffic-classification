@@ -1,0 +1,41 @@
+# Installed environments and Python caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Raw traffic and copied datasets
+*.pcap
+*.pcapng
+*.pcap.gz
+*.pcapng.gz
+VPN-PCAPS-01/
+VPN-PCAPs-02/
+data/
+
+# Generated results, local test fixtures and model artifacts
+pilot_results/
+results/
+artifacts/
+tmp/
+*.log
+*.joblib
+*.pkl
+*.pickle
+*.ubj
+*.onnx
+*_build/
+
+# Machine-specific inventory; sanitised metadata can be added separately
+metadata/capture_inventory.json
+
+# Local credentials, secrets and editor backup files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*~
+.DS_Store
+Thumbs.db
