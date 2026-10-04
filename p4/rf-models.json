@@ -1,0 +1,28 @@
+{
+  "stage": "rf-bmv2-integration-v1",
+  "evidence_run": "20260930T203044Z_43a729a87f",
+  "deployment_run": "20260929T221518Z_a61fc37702",
+  "n_packets": 8,
+  "trees": 10,
+  "selected_max_depth": 7,
+  "score_scale": 16777216,
+  "aggregation": "sum independently rounded per-tree class probabilities; lowest-index argmax",
+  "classes": ["CHAT", "FT", "MAIL", "P2P", "STREAMING", "VOIP"],
+  "base_feature_source_sha256": "6624ddf3f70acd376ccb02454800daeb9fcb30c7f59a6a63e326e0e88453ba4a",
+  "models": {
+    "B": {
+      "source": "rf_b.p4",
+      "source_sha256": "644e4a08d1478260b8ee36cc78d19977c37fda271700eddc221faf8b90d0cf65",
+      "forest_integer_sha256": "c5e7e8e6153e6d1d1d2f3651779baf3a457fb714457f6c261316ad559c8ecc63"
+    },
+    "C": {
+      "source": "rf_c.p4",
+      "source_sha256": "953a3bf9b29873d7750ad8f5ba78ff205bcbdab6079b271caa40f06523f7a7b1",
+      "forest_integer_sha256": "5b537efb1de185924fe9b9227cc21579676240e8f516bc63d7eb343f74e86ac9"
+    }
+  },
+  "new_model_fits": 0,
+  "test_records_scored": 0,
+  "real_capture_replay_verified": false,
+  "live_performance_measured": false
+}
