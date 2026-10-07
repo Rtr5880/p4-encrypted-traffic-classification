@@ -1,0 +1,32 @@
+diff --git a/targets/simple_switch/simple_switch.cpp b/targets/simple_switch/simple_switch.cpp
+index 5343638..c63522d 100644
+--- a/targets/simple_switch/simple_switch.cpp
++++ b/targets/simple_switch/simple_switch.cpp
+@@ -366,7 +366,9 @@ SimpleSwitch::get_time_elapsed_us() const {
+ 
+ uint64_t
+ SimpleSwitch::get_time_since_epoch_us() const {
+-  auto tp = clock::now();
++  // The control-plane epoch API still returns wall-clock time. Only elapsed
++  // dataplane time (get_ts / ingress / egress / queue durations) is monotonic.
++  auto tp = std::chrono::system_clock::now();
+   return duration_cast<ts_res>(tp.time_since_epoch()).count();
+ }
+ 
+diff --git a/targets/simple_switch/simple_switch.h b/targets/simple_switch/simple_switch.h
+index 25c0159..a0e6bd2 100644
+--- a/targets/simple_switch/simple_switch.h
++++ b/targets/simple_switch/simple_switch.h
+@@ -75,7 +75,11 @@ class SimpleSwitch : public Switch {
+       bm::McSimplePre::DEFAULT_L2_MAX_ENTRIES;
+ 
+  private:
+-  using clock = std::chrono::high_resolution_clock;
++  // Dataplane timestamps measure elapsed time, not adjustable wall time.
++  // high_resolution_clock aliases system_clock on this toolchain and can
++  // regress when the host / WSL wall clock is corrected.
++  using clock = std::chrono::steady_clock;
++  static_assert(clock::is_steady, "SimpleSwitch elapsed clock must be steady");
+ 
+  public:
+   // by default, swapping is off

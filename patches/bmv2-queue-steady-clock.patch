@@ -1,0 +1,33 @@
+diff --git a/include/bm/bm_sim/queueing.h b/include/bm/bm_sim/queueing.h
+index f91553c..c2095c5 100644
+--- a/include/bm/bm_sim/queueing.h
++++ b/include/bm/bm_sim/queueing.h
+@@ -376,9 +376,10 @@ class QueueingLogicRL {
+ 
+  private:
+   using ticks = std::chrono::nanoseconds;
+-  // clock choice? switch to steady if observing re-ordering
+-  // using clock = std::chrono::steady_clock;
+-  using clock = std::chrono::high_resolution_clock;
++  // Queue deadlines measure elapsed time, not wall time. A host clock
++  // correction must not postpone packets already assigned a send deadline.
++  using clock = std::chrono::steady_clock;
++  static_assert(clock::is_steady, "Rate-limited queue clock must be steady");
+ 
+   static constexpr ticks rate_to_ticks(uint64_t pps) {
+     using std::chrono::duration;
+@@ -685,11 +686,9 @@ class QueueingLogicPriRL {
+ 
+  private:
+   using ticks = std::chrono::nanoseconds;
+-  // clock choice? switch to steady if observing re-ordering
+-  // in my Linux VM, it seems that both clocks behave the same (can sometimes
+-  // stop increasing for a bit but do not go backwards).
+-  // using clock = std::chrono::steady_clock;
+-  using clock = std::chrono::high_resolution_clock;
++  // Priority-queue deadlines must also survive host wall-clock corrections.
++  using clock = std::chrono::steady_clock;
++  static_assert(clock::is_steady, "Priority rate-limited queue clock must be steady");
+ 
+   static constexpr ticks rate_to_ticks(uint64_t pps) {
+     using std::chrono::duration;
