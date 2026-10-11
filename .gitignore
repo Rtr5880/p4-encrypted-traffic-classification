@@ -31,6 +31,7 @@ tmp/
 metadata/capture_inventory.json
 
 # Local credentials, secrets and editor backup files
+.streamlit/secrets.toml
 .env
 .env.*
 !.env.example

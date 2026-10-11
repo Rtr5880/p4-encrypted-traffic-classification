@@ -1,0 +1,598 @@
+{
+  "schema_version": "dashboard-history-registry-v1",
+  "description": "Explicit curated Stage 4 history snapshot. Failed, incomplete, supplementary and demo runs are retained; no newest-run promotion. Future demos require an explicit catalogue addition.",
+  "entries": [
+    {
+      "id": "rf_deployment.20260929T221201Z_5f0c01340a",
+      "family": "classification",
+      "category": "reference",
+      "label": "Offline RF integer-probability reference / 20260929T221201Z_5f0c01340a",
+      "scope": "Model conversion/parity evidence, not a fresh accuracy or performance evaluation.",
+      "run_id": "20260929T221201Z_5f0c01340a",
+      "root": "project",
+      "path": "results/rf_deployment/20260929T221201Z_5f0c01340a/summary.json",
+      "sha256": "203e51edb9ae35501c4c693f0ecc142d328e5753744931d1b066709a6e7f694d",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "rf_reference_verified_on_tested_vectors",
+      "limitations": [
+        "Model conversion/parity evidence, not a fresh accuracy or performance evaluation."
+      ]
+    },
+    {
+      "id": "rf_deployment.20260929T221518Z_a61fc37702",
+      "family": "classification",
+      "category": "reference",
+      "label": "Offline RF integer-probability reference / 20260929T221518Z_a61fc37702",
+      "scope": "Model conversion/parity evidence, not a fresh accuracy or performance evaluation.",
+      "run_id": "20260929T221518Z_a61fc37702",
+      "root": "project",
+      "path": "results/rf_deployment/20260929T221518Z_a61fc37702/summary.json",
+      "sha256": "22c11077af7342336fa40a42fef754b160d79d27acb119cd303599ba34a20037",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "rf_reference_verified_on_tested_vectors",
+      "limitations": [
+        "Model conversion/parity evidence, not a fresh accuracy or performance evaluation."
+      ]
+    },
+    {
+      "id": "p4_features.20260930T114849Z_d3a429d3af",
+      "family": "correctness",
+      "category": "synthetic",
+      "label": "Shared P4 feature verification / 20260930T114849Z_d3a429d3af",
+      "scope": "Synthetic feature tests; no real activity accuracy or qualified runtime claim.",
+      "run_id": "20260930T114849Z_d3a429d3af",
+      "root": "project",
+      "path": "results/p4_features/20260930T114849Z_d3a429d3af/summary.json",
+      "sha256": "719785a3610362978d7e6fdbd2aa5d29c2d28f05ce6be82dd2fe9d1538b46864",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "feature_tests_passed",
+      "limitations": [
+        "Synthetic feature tests; no real activity accuracy or qualified runtime claim."
+      ]
+    },
+    {
+      "id": "p4_features.20260930T115414Z_69fc80fe17",
+      "family": "correctness",
+      "category": "synthetic",
+      "label": "Shared P4 feature verification / 20260930T115414Z_69fc80fe17",
+      "scope": "Synthetic feature tests; no real activity accuracy or qualified runtime claim.",
+      "run_id": "20260930T115414Z_69fc80fe17",
+      "root": "project",
+      "path": "results/p4_features/20260930T115414Z_69fc80fe17/summary.json",
+      "sha256": "43f593686656106b73c2e87fbc99e4763ba66f35a831337adb2392071277b9ea",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "feature_tests_passed",
+      "limitations": [
+        "Synthetic feature tests; no real activity accuracy or qualified runtime claim."
+      ]
+    },
+    {
+      "id": "rf_integration.20260930T182832Z_6f773b6afa",
+      "family": "correctness",
+      "category": "synthetic",
+      "label": "Integrated RF/P4 verification / 20260930T182832Z_6f773b6afa",
+      "scope": "Synthetic integrated reference parity; not held-out activity accuracy.",
+      "run_id": "20260930T182832Z_6f773b6afa",
+      "root": "project",
+      "path": "results/rf_integration/20260930T182832Z_6f773b6afa/summary.json",
+      "sha256": "825486f521875d84a41dd6fd99b3c3f644f9e7727cd206efdbb4f86f4ee0d995",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "rf_integration_passed",
+      "limitations": [
+        "Synthetic integrated reference parity; not held-out activity accuracy."
+      ]
+    },
+    {
+      "id": "rf_integration.20260930T203044Z_43a729a87f",
+      "family": "correctness",
+      "category": "synthetic",
+      "label": "Integrated RF/P4 verification / 20260930T203044Z_43a729a87f",
+      "scope": "Synthetic integrated reference parity; not held-out activity accuracy.",
+      "run_id": "20260930T203044Z_43a729a87f",
+      "root": "project",
+      "path": "results/rf_integration/20260930T203044Z_43a729a87f/summary.json",
+      "sha256": "24db45602c5a5a1fcb1277fff0fb0707975e57426b486c6e890a6057fc324c75",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "rf_integration_passed",
+      "limitations": [
+        "Synthetic integrated reference parity; not held-out activity accuracy."
+      ]
+    },
+    {
+      "id": "real_pcap_replay.20261004T194654Z_dad5c6e8c1",
+      "family": "correctness",
+      "category": "controlled",
+      "label": "Controlled real-PCAP parity / 20261004T194654Z_dad5c6e8c1",
+      "scope": "Injected capture timestamps and debug reports; correctness, not native runtime performance.",
+      "run_id": "20261004T194654Z_dad5c6e8c1",
+      "root": "project",
+      "path": "results/real_pcap_replay/20261004T194654Z_dad5c6e8c1/summary.json",
+      "sha256": "cdcab2fe9380298415ebe502e513857087bd983ee4350bfe93c8903bde3fd8f7",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "controlled_real_pcap_parity_pass",
+      "limitations": [
+        "Injected capture timestamps and debug reports; correctness, not native runtime performance."
+      ]
+    },
+    {
+      "id": "real_pcap_replay.20261004T195523Z_f74dc02717",
+      "family": "correctness",
+      "category": "controlled",
+      "label": "Controlled real-PCAP parity / 20261004T195523Z_f74dc02717",
+      "scope": "Injected capture timestamps and debug reports; correctness, not native runtime performance.",
+      "run_id": "20261004T195523Z_f74dc02717",
+      "root": "project",
+      "path": "results/real_pcap_replay/20261004T195523Z_f74dc02717/summary.json",
+      "sha256": "2b74ce134a599f432036ba9b4ec36d37b406b300fe2acde5ac909838eb1f144d",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "controlled_real_pcap_parity_pass",
+      "limitations": [
+        "Injected capture timestamps and debug reports; correctness, not native runtime performance."
+      ]
+    },
+    {
+      "id": "real_pcap_replay.20261004T195816Z_58c0a8fb8a",
+      "family": "correctness",
+      "category": "controlled",
+      "label": "Controlled real-PCAP parity / 20261004T195816Z_58c0a8fb8a",
+      "scope": "Injected capture timestamps and debug reports; correctness, not native runtime performance.",
+      "run_id": "20261004T195816Z_58c0a8fb8a",
+      "root": "project",
+      "path": "results/real_pcap_replay/20261004T195816Z_58c0a8fb8a/summary.json",
+      "sha256": "263b2b71e66b5e9ee5cc15a0ca68099aa1de46a3f4cb7e50f3875e481af988a0",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "controlled_real_pcap_parity_pass",
+      "limitations": [
+        "Injected capture timestamps and debug reports; correctness, not native runtime performance."
+      ]
+    },
+    {
+      "id": "real_pcap_replay.20261005T175708Z_56d3065b8b",
+      "family": "correctness",
+      "category": "controlled",
+      "label": "Controlled real-PCAP parity / 20261005T175708Z_56d3065b8b",
+      "scope": "Injected capture timestamps and debug reports; correctness, not native runtime performance.",
+      "run_id": "20261005T175708Z_56d3065b8b",
+      "root": "project",
+      "path": "results/real_pcap_replay/20261005T175708Z_56d3065b8b/summary.json",
+      "sha256": "ee8c2058c2d7ca00e100a0e5671def7aa15313582b9a933fba66e267497f523b",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "controlled_real_pcap_parity_pass",
+      "limitations": [
+        "Injected capture timestamps and debug reports; correctness, not native runtime performance."
+      ]
+    },
+    {
+      "id": "real_pcap_replay.20261005T182524Z_ba953271f7",
+      "family": "correctness",
+      "category": "controlled",
+      "label": "Controlled real-PCAP parity / 20261005T182524Z_ba953271f7",
+      "scope": "Injected capture timestamps and debug reports; correctness, not native runtime performance.",
+      "run_id": "20261005T182524Z_ba953271f7",
+      "root": "project",
+      "path": "results/real_pcap_replay/20261005T182524Z_ba953271f7/summary.json",
+      "sha256": "c4c155b4c587b3626d9b70711a226a6d82296041f5ac366e3d40497d4dfe35f5",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "controlled_real_pcap_parity_pass",
+      "limitations": [
+        "Injected capture timestamps and debug reports; correctness, not native runtime performance."
+      ]
+    },
+    {
+      "id": "native_clock_pilot.20261007T155354Z_40a3acbb53",
+      "family": "native",
+      "category": "pilot",
+      "label": "Native-clock one-prefix pilot / 20261007T155354Z_40a3acbb53",
+      "scope": "Bounded correctness pilot; not a classification accuracy or performance benchmark.",
+      "run_id": "20261007T155354Z_40a3acbb53",
+      "root": "project",
+      "path": "results/native_clock_pilot/20261007T155354Z_40a3acbb53/summary.json",
+      "sha256": "7c7b236f1c04f7642aea38e674a02bfd06d2c0c3dcb5a004c98a3f519fd00c24",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "native_pilot_passed",
+      "limitations": [
+        "Bounded correctness pilot; not a classification accuracy or performance benchmark."
+      ]
+    },
+    {
+      "id": "native_clock_pilot.20261007T181437Z_f0e10808b5",
+      "family": "native",
+      "category": "pilot",
+      "label": "Native-clock one-prefix pilot / 20261007T181437Z_f0e10808b5",
+      "scope": "Bounded correctness pilot; not a classification accuracy or performance benchmark.",
+      "run_id": "20261007T181437Z_f0e10808b5",
+      "root": "project",
+      "path": "results/native_clock_pilot/20261007T181437Z_f0e10808b5/summary.json",
+      "sha256": "685b2ea1b32b3a356156222bb90f83196fef1d022aecab0e6f87c52ffd2c86d5",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "native_pilot_passed",
+      "limitations": [
+        "Bounded correctness pilot; not a classification accuracy or performance benchmark."
+      ]
+    },
+    {
+      "id": "native_evaluation.20261007T170152Z_63d7d652b1",
+      "family": "native",
+      "category": "held-out",
+      "label": "Native held-out evaluation / 20261007T170152Z_63d7d652b1",
+      "scope": "398 planned frozen held-out N8 cases/model, capture-derived labels; timing deviations are not forwarding latency.",
+      "run_id": "20261007T170152Z_63d7d652b1",
+      "root": "project",
+      "path": "results/native_evaluation/20261007T170152Z_63d7d652b1/summary.json",
+      "sha256": "1bc7579f44be3ddb6ecda9be42b2ca26eb08b3cba83ed542f907b86e4ac29a0b",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "native_evaluation_incomplete",
+      "limitations": [
+        "398 planned frozen held-out N8 cases/model, capture-derived labels; timing deviations are not forwarding latency."
+      ]
+    },
+    {
+      "id": "native_evaluation.20261007T183232Z_2ceab77f5e",
+      "family": "native",
+      "category": "held-out",
+      "label": "Native held-out evaluation / 20261007T183232Z_2ceab77f5e",
+      "scope": "398 planned frozen held-out N8 cases/model, capture-derived labels; timing deviations are not forwarding latency.",
+      "run_id": "20261007T183232Z_2ceab77f5e",
+      "root": "project",
+      "path": "results/native_evaluation/20261007T183232Z_2ceab77f5e/summary.json",
+      "sha256": "5fb008eb5104191219951f9567808420cc834ebe36df8fb768ed30ef0823320e",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "native_evaluation_passed",
+      "limitations": [
+        "398 planned frozen held-out N8 cases/model, capture-derived labels; timing deviations are not forwarding latency."
+      ]
+    },
+    {
+      "id": "performance_pilot.20261007T212707Z_a187129aef",
+      "family": "performance",
+      "category": "pilot",
+      "label": "Normal-build performance pilot / 20261007T212707Z_a187129aef",
+      "scope": "Instrumentation pilot; historical validity retained, not maximum switch capacity.",
+      "run_id": "20261007T212707Z_a187129aef",
+      "root": "project",
+      "path": "results/performance_pilot/20261007T212707Z_a187129aef/summary.json",
+      "sha256": "d36ca8a953dd9ab2950ca5120e92bdfa1267228b9745fa95678e76179e00a537",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "performance_pilot_incomplete",
+      "limitations": [
+        "Instrumentation pilot; historical validity retained, not maximum switch capacity."
+      ]
+    },
+    {
+      "id": "performance_pilot.20261007T220226Z_736832be56",
+      "family": "performance",
+      "category": "pilot",
+      "label": "Normal-build performance pilot / 20261007T220226Z_736832be56",
+      "scope": "Instrumentation pilot; historical validity retained, not maximum switch capacity.",
+      "run_id": "20261007T220226Z_736832be56",
+      "root": "project",
+      "path": "results/performance_pilot/20261007T220226Z_736832be56/summary.json",
+      "sha256": "6fe4a13639b10ef51e3164c94761e0292d5f8400e88abf451791092c61a182f9",
+      "adapter": "history_summary",
+      "schema_field": "status",
+      "schema_value": "performance_pilot_passed",
+      "limitations": [
+        "Instrumentation pilot; historical validity retained, not maximum switch capacity."
+      ]
+    },
+    {
+      "id": "raw_performance_calibration.20261008T201626Z_561344179e",
+      "family": "performance",
+      "category": "calibration",
+      "label": "RAW calibration / 20261008T201626Z_561344179e",
+      "scope": "Session-specific clock qualification; no qualified kernel latency or saturation claim.",
+      "run_id": "20261008T201626Z_561344179e",
+      "root": "project",
+      "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/summary.json",
+      "sha256": "54b1f1bf27bb1dbb9f265fdd6689afd77a144bb4349a6f6269e39573a6f403d6",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "raw-performance-calibration-v3",
+      "limitations": [
+        "Session-specific clock qualification; no qualified kernel latency or saturation claim."
+      ]
+    },
+    {
+      "id": "raw_higher_rate_calibration.20261008T214859Z_18ddeca846",
+      "family": "performance",
+      "category": "supplementary",
+      "label": "Higher-rate RAW calibration / 20261008T214859Z_18ddeca846",
+      "scope": "Stopped at original trial 21 integrity failure; 5000 pps unqualified. No pooling with final repeated campaign.",
+      "run_id": "20261008T214859Z_18ddeca846",
+      "root": "project",
+      "path": "results/raw_higher_rate_calibration/20261008T214859Z_18ddeca846/summary.json",
+      "sha256": "7cc69ce94e1d37c24a02b0a9e2f6f052feeae371941b367f51ea879b715dd89e",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "raw-performance-calibration-v4",
+      "limitations": [
+        "Stopped at original trial 21 integrity failure; 5000 pps unqualified. No pooling with final repeated campaign."
+      ]
+    },
+    {
+      "id": "raw_performance_benchmark.20261008T223313Z_9752ce54b5",
+      "family": "performance",
+      "category": "failed-first-session",
+      "label": "Original repeated benchmark session / 20261008T223313Z_9752ce54b5",
+      "scope": "Original trial 1 invalid and 50 missing output packets preserved; not retried or requalified.",
+      "run_id": "20261008T223313Z_9752ce54b5",
+      "root": "project",
+      "path": "results/raw_performance_benchmark/20261008T223313Z_9752ce54b5/summary.json",
+      "sha256": "8653877fa8c110422c797a077bdeb9f56fee20e1bcc0135ae4b92a5cba60759c",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "raw-performance-benchmark-v5",
+      "limitations": [
+        "Original trial 1 invalid and 50 missing output packets preserved; not retried or requalified."
+      ]
+    },
+    {
+      "id": "raw_performance_continuation.20261008T225644Z_791a9144a4",
+      "family": "performance",
+      "category": "continuation",
+      "label": "159-trial continuation session / 20261008T225644Z_791a9144a4",
+      "scope": "Separate execution session; completed acquisition is not independent clock qualification.",
+      "run_id": "20261008T225644Z_791a9144a4",
+      "root": "project",
+      "path": "results/raw_performance_continuation/20261008T225644Z_791a9144a4/summary.json",
+      "sha256": "580cf8ef48da31727ee97b7783bee811a986e983adae995c0b01ed3c92556ee1",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "raw-performance-benchmark-continuation-v6",
+      "limitations": [
+        "Separate execution session; completed acquisition is not independent clock qualification."
+      ]
+    },
+    {
+      "id": "live_demo.20261010T011217Z_508d7ba46a",
+      "family": "live",
+      "category": "synthetic-demo",
+      "label": "Separate live demonstration / 20261010T011217Z_508d7ba46a",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T011217Z_508d7ba46a",
+      "root": "project",
+      "path": "results/live_demo/20261010T011217Z_508d7ba46a/summary.json",
+      "sha256": "8fa19f988deb413ee0e7bc9c4e8bee473fe57c7dec530a4cbb9bb94814e3725e",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-synthetic-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "rf_c",
+      "workload": "classification-heavy",
+      "target_pps": 250
+    },
+    {
+      "id": "live_demo.20261010T012733Z_66d74880a2",
+      "family": "live",
+      "category": "synthetic-demo",
+      "label": "Separate live demonstration / 20261010T012733Z_66d74880a2",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T012733Z_66d74880a2",
+      "root": "project",
+      "path": "results/live_demo/20261010T012733Z_66d74880a2/summary.json",
+      "sha256": "24c9d1528993037cee90f428b00b389055a5766c8a0685667fad20609f00838b",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-synthetic-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "rf_c",
+      "workload": "classification-heavy",
+      "target_pps": 500
+    },
+    {
+      "id": "live_demo.20261010T012858Z_360b5e4ac7",
+      "family": "live",
+      "category": "synthetic-demo",
+      "label": "Separate live demonstration / 20261010T012858Z_360b5e4ac7",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T012858Z_360b5e4ac7",
+      "root": "project",
+      "path": "results/live_demo/20261010T012858Z_360b5e4ac7/summary.json",
+      "sha256": "30378919dae017e9cafa8911af2168fec053462c9a302ef1d5a45749340c1531",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-synthetic-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "rf_c",
+      "workload": "classification-heavy",
+      "target_pps": 250
+    },
+    {
+      "id": "live_demo.20261010T161851Z_07c7026e36",
+      "family": "live",
+      "category": "real-pcap-demo",
+      "label": "Real-PCAP paired B/C demo / 20261010T161851Z_07c7026e36",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T161851Z_07c7026e36",
+      "root": "project",
+      "path": "results/live_demo/20261010T161851Z_07c7026e36/summary.json",
+      "sha256": "08dd0e1aeed10d88c9b7f915fe80ff4386d254358296bf11e9fe51c592d5ee1e",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-pcap-classification-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "RF-B and RF-C",
+      "example": "voip",
+      "capture": "vpn_hangouts_audio2.pcap",
+      "capture_hint": "VOIP"
+    },
+    {
+      "id": "live_demo.20261010T162403Z_cbcbefd134",
+      "family": "live",
+      "category": "real-pcap-demo",
+      "label": "Real-PCAP paired B/C demo / 20261010T162403Z_cbcbefd134",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T162403Z_cbcbefd134",
+      "root": "project",
+      "path": "results/live_demo/20261010T162403Z_cbcbefd134/summary.json",
+      "sha256": "d803d97b86e23d762799944f56d48678ed9a940bbd8d04b02348e0970f7b69ff",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-pcap-classification-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "RF-B and RF-C",
+      "example": "streaming",
+      "capture": "vpn_youtube_A.pcap",
+      "capture_hint": "STREAMING"
+    },
+    {
+      "id": "live_demo.20261010T162643Z_168f0b7ad1",
+      "family": "live",
+      "category": "synthetic-demo",
+      "label": "Separate live demonstration / 20261010T162643Z_168f0b7ad1",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T162643Z_168f0b7ad1",
+      "root": "project",
+      "path": "results/live_demo/20261010T162643Z_168f0b7ad1/summary.json",
+      "sha256": "712ff0d22e651cc403cbfe954baab27d7d75195a84c336620b137df05011bf6c",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-synthetic-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "rf_c",
+      "workload": "classification-heavy",
+      "target_pps": 250
+    },
+    {
+      "id": "live_demo.20261010T221150Z_791935d5ff",
+      "family": "live",
+      "category": "real-pcap-demo",
+      "label": "Real-PCAP paired B/C demo / 20261010T221150Z_791935d5ff",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T221150Z_791935d5ff",
+      "root": "project",
+      "path": "results/live_demo/20261010T221150Z_791935d5ff/summary.json",
+      "sha256": "f4e31ea1ddea15c8bfc1af306405f68712787011d92a9b0dfaec9dcc27079c2f",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-pcap-classification-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "RF-B and RF-C",
+      "example": "voip",
+      "capture": "vpn_hangouts_audio2.pcap",
+      "capture_hint": "VOIP"
+    },
+    {
+      "id": "live_demo.20261010T221434Z_81d3691501",
+      "family": "live",
+      "category": "synthetic-demo",
+      "label": "Separate live demonstration / 20261010T221434Z_81d3691501",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T221434Z_81d3691501",
+      "root": "project",
+      "path": "results/live_demo/20261010T221434Z_81d3691501/summary.json",
+      "sha256": "bb2fae71dd0100a3bf4ca48c7c849b5bddc8d2aa1db2f2e8e801e4c5ec80f923",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-synthetic-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "rf_c",
+      "workload": "classification-heavy",
+      "target_pps": 250
+    },
+    {
+      "id": "live_demo.20261010T222027Z_bb1c6e5db7",
+      "family": "live",
+      "category": "synthetic-demo",
+      "label": "Separate live demonstration / 20261010T222027Z_bb1c6e5db7",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T222027Z_bb1c6e5db7",
+      "root": "project",
+      "path": "results/live_demo/20261010T222027Z_bb1c6e5db7/summary.json",
+      "sha256": "f5beeb18f110ff758056114f1c1730950c4abaf43a87c62022d8b345964f3d49",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-synthetic-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "rf_c",
+      "workload": "cached-forwarding",
+      "target_pps": 1000
+    },
+    {
+      "id": "live_demo.20261010T222302Z_f5b0832bc3",
+      "family": "live",
+      "category": "synthetic-demo",
+      "label": "Separate live demonstration / 20261010T222302Z_f5b0832bc3",
+      "scope": "Provisional demo observations, not independent research accuracy or qualified performance evidence.",
+      "run_id": "20261010T222302Z_f5b0832bc3",
+      "root": "project",
+      "path": "results/live_demo/20261010T222302Z_f5b0832bc3/summary.json",
+      "sha256": "9758d2f9c6a0e889acb34068fc83eb840af5210849a94905ead2f55dda7979c6",
+      "adapter": "history_summary",
+      "schema_field": "schema_version",
+      "schema_value": "live-synthetic-demo-v1",
+      "limitations": [
+        "Provisional demo observations, not independent research accuracy or qualified performance evidence."
+      ],
+      "mode": "rf_c",
+      "workload": "classification-heavy",
+      "target_pps": 1000
+    },
+    {
+      "id": "raw-calibration-recovery.20261008T190909Z_43a981ecb9",
+      "family": "performance",
+      "category": "recovery-report",
+      "label": "Preserved nine-trial failed RAW calibration recovery",
+      "scope": "Separate recovery report, not a repaired historical verdict; 8 local valid trials and one failed warm-up pacing trial. Original final summary absent.",
+      "run_id": "20261008T190909Z_43a981ecb9",
+      "root": "project",
+      "path": "results/raw_calibration_recovery_20261008_43a981ecb9/report.json",
+      "sha256": "fa4ada45f57e0dea1b85426cec0e9b35a34900fffa2f555c4e9a33b695d213e0",
+      "adapter": "recovery_report",
+      "schema_value": "raw-calibration-recovery-v1",
+      "limitations": [
+        "Original measurements and failure retained; no successful campaign finalization or qualified absolute rate claim."
+      ]
+    },
+    {
+      "id": "final-performance.20261009_complete_campaign_final",
+      "family": "performance",
+      "category": "final-aggregate",
+      "label": "Final 160-trial partial-metric characterization",
+      "scope": "Original failed trial plus separately executed 159-trial continuation; 142 local-valid trials, independent RAW qualification INCONCLUSIVE. Absolute rates/CPU percentages/latency unqualified.",
+      "run_id": "original_20261008T223313Z_9752ce54b5_plus_continuation_20261008T225644Z_791a9144a4",
+      "root": "external",
+      "path": "dashboard_summary.json",
+      "sha256": "ef496538a229f71a16ef9331f75aef04ffd2ac25ee842ac0640abd8be3db85eb",
+      "adapter": "performance_campaign",
+      "schema_value": "performance-evaluation-evidence-summary-v1",
+      "limitations": [
+        "Acquisition, measurement integrity, clock qualification and pacing are separate statuses."
+      ]
+    }
+  ]
+}

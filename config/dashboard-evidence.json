@@ -1,0 +1,214 @@
+{
+  "schema_version": "dashboard-evidence-registry-v1",
+  "description": "Pinned read-only research evidence, including Stage 4 sealed detail views. File verification is separate from scientific qualification. No newest-run promotion.",
+  "external_root": "/mnt/c/Users/user/OneDrive/Documents/EEE4022/output/performance_evaluation/20261009_complete_campaign_final",
+  "entries": {
+    "native_run": {
+      "root": "project",
+      "path": "results/native_evaluation/20261007T183232Z_2ceab77f5e/summary.json",
+      "sha256": "5fb008eb5104191219951f9567808420cc834ebe36df8fb768ed30ef0823320e",
+      "adapter": "native_run",
+      "schema_field": "status",
+      "schema_value": "native_evaluation_passed",
+      "run_id": "20261007T183232Z_2ceab77f5e",
+      "label": "Sealed native evaluation details: 796 paired model-case outcomes",
+      "population": "398 frozen held-out N=8 instances per model",
+      "limitations": ["Capture-derived labels, not independently verified per-flow truth", "Native B/C executions observe different arrival times", "Timing deviations are not forwarding or RF execution latency"]
+    },
+    "native_population": {
+      "root": "project",
+      "path": "results/native_evaluation_preparation/20261007T182217Z_a93176dc1f/population.json",
+      "sha256": "871f11ae35b4a66222d2335146bfae6a0d1546c907760f08cd695161b5d40f67",
+      "adapter": "native_population",
+      "schema_value": 1,
+      "run_id": "20261007T182217Z_a93176dc1f",
+      "label": "Frozen held-out source-case provenance and eight-packet prefixes",
+      "population": "398 held-out cases, separate from all-29-capture correctness replay",
+      "limitations": ["Saved source records and original timestamps; not a new extraction or model fit", "Private source packets must not be included in public dashboard exports"]
+    },
+    "native_metrics": {
+      "root": "project",
+      "path": "results/native_evaluation/20261007T183232Z_2ceab77f5e/metrics.json",
+      "sha256": "e90e9c60147fa001c28a1aba8afd4ce954cf6d66cf4bb26d05d4a5dec63a42d5",
+      "adapter": "native_metrics",
+      "schema_value": 1,
+      "run_id": "20261007T183232Z_2ceab77f5e",
+      "label": "Frozen held-out capture-time and actual native-clock classification",
+      "population": "398 held-out N=8 instances per model; six provisional capture-derived classes",
+      "limitations": ["Not independently verified per-flow activity labels", "Parent-conversation-disjoint, not capture/session-disjoint", "Native B/C arrivals differ; native comparison is not pure direction ablation"]
+    },
+    "controlled_replay": {
+      "root": "project",
+      "path": "results/real_pcap_replay/20261005T182524Z_ba953271f7/summary.json",
+      "sha256": "c4c155b4c587b3626d9b70711a226a6d82296041f5ac366e3d40497d4dfe35f5",
+      "adapter": "controlled_replay",
+      "schema_field": "status",
+      "schema_value": "controlled_real_pcap_parity_pass",
+      "run_id": "20261005T182524Z_ba953271f7",
+      "label": "Controlled injected-capture-time 29-PCAP P4 correctness",
+      "limitations": ["Implementation correctness, not classification accuracy", "Injected timestamps and debug reports; not throughput or latency benchmark"]
+    },
+    "rf_b": {
+      "root": "project",
+      "path": "results/rf_deployment/20260929T221518Z_a61fc37702/n8_RF_B/forest_integer.json",
+      "sha256": "c5e7e8e6153e6d1d1d2f3651779baf3a457fb714457f6c261316ad559c8ecc63",
+      "adapter": "forest",
+      "schema_value": "rf-integer-reference-v1",
+      "feature_set": "B",
+      "run_id": "20260929T221518Z_a61fc37702",
+      "label": "Frozen RF-B N=8 integer-probability forest",
+      "limitations": ["Structural metadata only; performance and accuracy have separate evidence roles"]
+    },
+    "rf_c": {
+      "root": "project",
+      "path": "results/rf_deployment/20260929T221518Z_a61fc37702/n8_RF_C/forest_integer.json",
+      "sha256": "5b537efb1de185924fe9b9227cc21579676240e8f516bc63d7eb343f74e86ac9",
+      "adapter": "forest",
+      "schema_value": "rf-integer-reference-v1",
+      "feature_set": "C",
+      "run_id": "20260929T221518Z_a61fc37702",
+      "label": "Frozen RF-C N=8 integer-probability forest",
+      "limitations": ["Both P4 deployments extract direction; runtime comparison does not isolate direction extraction"]
+    },
+    "raw_calibration": {
+      "root": "project",
+      "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/summary.json",
+      "sha256": "54b1f1bf27bb1dbb9f265fdd6689afd77a144bb4349a6f6269e39573a6f403d6",
+      "adapter": "calibration_summary",
+      "schema_value": "raw-performance-calibration-v3",
+      "expected_trial_count": 16,
+      "run_id": "20261008T201626Z_561344179e",
+      "label": "Qualified 16-trial RAW calibration at 100 and 1000 pps",
+      "limitations": ["One observation per configuration/workload/rate", "Independent qualification is session-specific", "Kernel forwarding/inference latency unqualified", "No capacity or saturation claim"],
+      "children": [
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_001_classification-heavy_00100pps_r01_rf_c/qualified_trial_summary.json",
+          "sha256": "eb12e91498203594d724f471130ddbd202444b1838adfd794c0eb4f88e4c0df9",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "rf_c", "workload": "classification-heavy", "rate_pps": 100, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_002_classification-heavy_00100pps_r01_features/qualified_trial_summary.json",
+          "sha256": "254c52bf642a243f2b6aa312525ac851bd46df1c4a1d2dfbc06f80b2648b3fe4",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "features", "workload": "classification-heavy", "rate_pps": 100, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_003_classification-heavy_00100pps_r01_forwarding/qualified_trial_summary.json",
+          "sha256": "43226c13b37d4c2b9879c450f0f1b42fc595fce4d9d317ea923122dc777efbce",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "forwarding", "workload": "classification-heavy", "rate_pps": 100, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_004_classification-heavy_00100pps_r01_rf_b/qualified_trial_summary.json",
+          "sha256": "088fefb7f40ec40c8cd1a48168c1ba042a1095dd596a558b8889f897a66c4d49",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "rf_b", "workload": "classification-heavy", "rate_pps": 100, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_005_cached-forwarding_00100pps_r01_rf_b/qualified_trial_summary.json",
+          "sha256": "1de1c8aa9699db6e472da7ed82e76a270a63b5f388c71e117ab567bde81fa160",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "rf_b", "workload": "cached-forwarding", "rate_pps": 100, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_006_cached-forwarding_00100pps_r01_features/qualified_trial_summary.json",
+          "sha256": "ebcd9fc5a3e9460ab444843ebd8a3798d58fc958111528a43e27d835aad9a9f9",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "features", "workload": "cached-forwarding", "rate_pps": 100, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_007_cached-forwarding_00100pps_r01_forwarding/qualified_trial_summary.json",
+          "sha256": "f8de897782c398f3d787a37840126598f66ddc4b7cbf91fbc75dce70a7beea70",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "forwarding", "workload": "cached-forwarding", "rate_pps": 100, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_008_cached-forwarding_00100pps_r01_rf_c/qualified_trial_summary.json",
+          "sha256": "2defddb14eca5185935921c065f3ac49514c0b26b39c875d137a90486ff41cbf",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "rf_c", "workload": "cached-forwarding", "rate_pps": 100, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_009_classification-heavy_01000pps_r01_rf_b/qualified_trial_summary.json",
+          "sha256": "55cb7a934f1411d2dccba3993a0e1d9b7b1dde2d994f5a48b5016584018abcb8",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "rf_b", "workload": "classification-heavy", "rate_pps": 1000, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_010_classification-heavy_01000pps_r01_features/qualified_trial_summary.json",
+          "sha256": "5f717559615a369c8fb1bd8cd0099bef4c8d1aa6347c3c47b21f2adb227800c2",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "features", "workload": "classification-heavy", "rate_pps": 1000, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_011_classification-heavy_01000pps_r01_forwarding/qualified_trial_summary.json",
+          "sha256": "1ec8c53ade40c962277370b6789c0a5326f7d130c27522064919ecc09ccc51c9",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "forwarding", "workload": "classification-heavy", "rate_pps": 1000, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_012_classification-heavy_01000pps_r01_rf_c/qualified_trial_summary.json",
+          "sha256": "01637fbdbb067bf3db60b171ec5d8638d21b862be0b5d77b19e2a7119e9f9388",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "rf_c", "workload": "classification-heavy", "rate_pps": 1000, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_013_cached-forwarding_01000pps_r01_rf_c/qualified_trial_summary.json",
+          "sha256": "01b5d9265b6f0020259b4b88980be54dcdde10e72a8ab05cca471533ab7bf0c6",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "rf_c", "workload": "cached-forwarding", "rate_pps": 1000, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_014_cached-forwarding_01000pps_r01_forwarding/qualified_trial_summary.json",
+          "sha256": "73f48b25ecc03994d46b9bcdf577cce4277dd8ca590b4fabc2d869c05f089554",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "forwarding", "workload": "cached-forwarding", "rate_pps": 1000, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_015_cached-forwarding_01000pps_r01_rf_b/qualified_trial_summary.json",
+          "sha256": "75fb5439d5eb2973ba2d4d4a408c429ac547bdb628506d922575c04246ccb4f3",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "rf_b", "workload": "cached-forwarding", "rate_pps": 1000, "repetition": 1}
+        },
+        {
+          "path": "results/raw_performance_calibration/20261008T201626Z_561344179e/trial_016_cached-forwarding_01000pps_r01_features/qualified_trial_summary.json",
+          "sha256": "7bf2cb667392019d1c54ef875ee3fb42c49992db135f42f118f51913c41fe146",
+          "adapter": "calibration_trial",
+          "identity": {"mode": "features", "workload": "cached-forwarding", "rate_pps": 1000, "repetition": 1}
+        }
+      ]
+    },
+    "higher_calibration": {
+      "root": "project",
+      "path": "results/raw_higher_rate_calibration/20261008T214859Z_18ddeca846/summary.json",
+      "sha256": "7cc69ce94e1d37c24a02b0a9e2f6f052feeae371941b367f51ea879b715dd89e",
+      "adapter": "calibration_summary",
+      "schema_value": "raw-performance-calibration-v4",
+      "expected_trial_count": 32,
+      "run_id": "20261008T214859Z_18ddeca846",
+      "label": "Historical higher-rate calibration; stopped at trial 21",
+      "limitations": ["Original integrity failure retained", "5000 pps was not qualified", "No pooling with final repeated campaign"]
+    },
+    "higher_calibration_trial_21": {
+      "root": "project",
+      "path": "results/raw_higher_rate_calibration/20261008T214859Z_18ddeca846/trial_021_classification-heavy_02000pps_r01_rf_b/qualified_trial_summary.json",
+      "sha256": "180a6cfd1cccbad4a90db8bd50c3e0ea0e542db5c3348674e33fe1a60b0eb5d0",
+      "adapter": "calibration_trial",
+      "run_id": "20261008T214859Z_18ddeca846",
+      "identity": {"mode": "rf_b", "workload": "classification-heavy", "rate_pps": 2000, "repetition": 1},
+      "label": "Preserved higher-rate trial 21 integrity failure",
+      "limitations": ["Failed trial remains failed; file verification does not qualify its rate measurements"]
+    },
+    "performance_campaign": {
+      "root": "external",
+      "path": "dashboard_summary.json",
+      "sha256": "ef496538a229f71a16ef9331f75aef04ffd2ac25ee842ac0640abd8be3db85eb",
+      "adapter": "performance_campaign",
+      "schema_value": "performance-evaluation-evidence-summary-v1",
+      "run_id": "original_20261008T223313Z_9752ce54b5_plus_continuation_20261008T225644Z_791a9144a4",
+      "label": "Final 160-trial partial-metric characterization",
+      "limitations": ["Independent RAW qualification INCONCLUSIVE", "Absolute rates and CPU percentages unqualified", "Repeated supported counts, OS CPU accounting and memory remain usable", "Kernel forwarding and isolated inference latency unqualified"]
+    }
+  }
+}

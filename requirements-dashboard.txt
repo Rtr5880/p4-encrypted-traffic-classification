@@ -1,0 +1,3 @@
+# Stage 1 UI only. Existing ML dependencies are not upgraded.
+streamlit==1.65.0
+plotly==6.9.0
