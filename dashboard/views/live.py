@@ -2,10 +2,14 @@
 from __future__ import annotations
 
 import math
+from html import escape
 import streamlit as st
 import plotly.graph_objects as go
 from dashboard.components import (
     hero, section_header, metric_row, notice, empty_panel, pill, plot, MODEL_COLORS,
+)
+from dashboard.live_presentation import (
+    install_live_style, render_journey, synthetic_journey, health_explanation,
 )
 
 TERMINAL = {"completed", "failed", "interrupted", "cancelled"}
@@ -67,7 +71,7 @@ def sample_rows(snapshot):
     return rows
 
 
-def observation_figure(rows, kind):
+def observation_figure(rows, kind, target_rate=None):
     definitions = {
         "traffic": [("input", "Input capture observations", "#60a5fa"),
                     ("output", "Output capture observations", "#2dd4bf")],
@@ -77,6 +81,7 @@ def observation_figure(rows, kind):
                    ("runner_rss", "Runner RSS", "#94a3b8")],
     }
     fig = go.Figure()
+    units = {"traffic":"pps", "cpu":"% of one core", "memory":"MiB"}
     for field, name, color in definitions[kind]:
         points = [row for row in rows if row[field] is not None]
         xfield = "seconds"
@@ -101,13 +106,66 @@ def observation_figure(rows, kind):
                 showlegend=index == 0, mode="lines+markers", connectgaps=False,
                 line=dict(color=color, width=2), marker=dict(size=4),
                 customdata=[[trial,phase] for row in subset],
-                hovertemplate="Elapsed RAW: %{x:.2f}s<br>Observed: %{y:.2f}<br>Trial %{customdata[0]} / %{customdata[1]}<extra>%{fullData.name}</extra>"))
+                hovertemplate="Elapsed RAW: %{x:.2f}s<br>Observed: %{y:.2f} " + units[kind] + "<br>Trial %{customdata[0]} / %{customdata[1]}<extra>%{fullData.name}</extra>"))
     titles = {"traffic":"Userspace observation rate (pps)",
               "cpu":"OS-accounted CPU (% of one core) / DEMO ONLY",
               "memory":"Resident memory (MiB)"}
     fig.update_layout(xaxis_title="Elapsed CLOCK_MONOTONIC_RAW seconds", yaxis_title=titles[kind])
     fig.update_yaxes(rangemode="tozero")
+    if kind == "traffic":
+        target = finite(target_rate)
+        if target is not None and target > 0:
+            fig.add_hline(y=target,line_dash="dot",line_color="#94a3b8",
+                          annotation_text="Nominal target (not achieved rate)",
+                          annotation_position="top left")
+        for phase, color in (("warmup","rgba(148,163,184,.08)"),
+                             ("measurement","rgba(45,212,191,.07)")):
+            for trial in {row["trial"] for row in rows if row["phase"]==phase}:
+                stamps=[row["seconds"] for row in rows if row["phase"]==phase and row["trial"]==trial
+                        and (row["input"] is not None or row["output"] is not None)]
+                if len(set(stamps))>=2:
+                    fig.add_vrect(x0=min(stamps),x1=max(stamps),fillcolor=color,
+                                  opacity=1,line_width=0,layer="below")
     return fig
+
+
+def _verdict_status(trial, key):
+    value = trial.get("verdicts", {}).get(key, {})
+    return value.get("status", "Not finalized") if isinstance(value, dict) else str(value)
+
+
+def _completed_summary(trial):
+    """Promote saved final accounting without promoting invalid metrics."""
+    metrics, gates = trial.get("metrics", {}), trial.get("metric_validity", {})
+    packet_valid = gates.get("packet_accounting") is True
+    decision_valid = gates.get("classification_counts") is True
+    section_header("Recorded trial outcome", "Final packet/decision accounting; acquisition status and metric qualification are separate.")
+    metric_row([
+        dict(label="Final sent / delivered",value=f"{fmt(metrics.get('packets_sent'))} / {fmt(metrics.get('packets_received'))}",
+             note="Supported packet accounting" if packet_valid else "Raw observations: packet accounting INVALID or unverified"),
+        dict(label="RF decisions / expected",value=f"{fmt(metrics.get('decisions'))} / {fmt(metrics.get('expected_decisions'))}",
+             note="Verified completion, not accuracy" if decision_valid else "Not applicable or accounting unverified"),
+        dict(label="Decision completion",value=fmt(counter_completion(trial),1,"%"),
+             note="Synthetic traffic has no ground-truth activity label"),
+    ])
+    labels = (("measurement_integrity","Measurement integrity"),
+              ("independent_raw_qualification","Independent RAW clock"),
+              ("sender_pacing_conformance","Pacing"))
+    parts = []
+    for key,label in labels:
+        value = _verdict_status(trial,key)
+        tone = "success" if value=="PASS" else "error" if value=="FAIL" else "warning"
+        parts.append('<div class="etc-live-health-item">' + escape(label) + ': ' + pill(value,tone) + '</div>')
+    st.markdown('<div class="etc-live-health">' + ''.join(parts) + '</div>',unsafe_allow_html=True)
+    failures = trial.get("failures", [])
+    if failures:
+        notice("Preserved run qualifications / issues", " | ".join(map(str,failures)), "warning")
+    with st.expander("What these health verdicts mean"):
+        for key,label in labels:
+            status = _verdict_status(trial,key)
+            st.markdown("**"+label+" — "+str(status)+"**")
+            st.caption(health_explanation(key,status))
+        st.caption("The exact run-specific warnings, failure reasons and socket statistics remain in Experiment health below. No previous clock certificate is inherited.")
 
 
 def _empty():
@@ -162,6 +220,7 @@ def _health(snapshot, trial):
 
 
 def render_evidence(evidence):
+    install_live_style()
     if evidence.status == "corrupt":
         notice("Telemetry integrity failure", "No metrics are displayed from corrupted or mismatched live evidence. "
                + " | ".join(map(str,evidence.messages)), "error")
@@ -192,6 +251,16 @@ def render_evidence(evidence):
             tone = "success" if state == "completed" else "error" if state == "failed" else "warning" if state in ("stale","interrupted") else "info"
             st.markdown(pill(state.upper(),tone) + pill(phase.replace("_"," "),"neutral"),unsafe_allow_html=True)
             st.caption(f"Trial {latest_trial} / {snapshot.get('total_trials', metadata.get('total_trials',1))} | Elapsed {fmt(elapsed_seconds(snapshot),1,' s')}")
+    render_journey(synthetic_journey(snapshot,evidence.events,state),
+                   "Recorded experiment milestones, not a simulated timeline. Missing retained milestones remain unrecorded; completion is not a blanket metric PASS.")
+    if trial:
+        _completed_summary(trial)
+    workload = metadata.get("workload")
+    if workload in {"classification-heavy","cached-forwarding"}:
+        st.caption("Workload: " + ("8 eligible packets per complete instance → one RF decision at packet eight."
+                   if workload=="classification-heavy" else
+                   "32 eligible packets per complete instance → one RF decision; the final 24 bypass repeated inference.")
+                   + " Final expected totals use actual packet-eight events, including incomplete groups.")
     seconds = finite(sample.get("phase_elapsed_seconds"))
     duration = metadata.get("warmup_seconds",5) if phase == "warmup" else metadata.get("measurement_seconds",20) if phase == "measurement" else None
     if seconds is not None and finite(duration) and duration > 0:
@@ -205,15 +274,21 @@ def render_evidence(evidence):
     metric_row([
         dict(label="Input packets observed", value=fmt(traffic.get("input_unique")), note="Exact-frame userspace capture matches"),
         dict(label="Output packets observed", value=fmt(traffic.get("output_unique")), note="Cumulative output observations"),
-        dict(label="Input / output observations", value=f"{fmt(traffic.get('input_observed_pps'),1)} / {fmt(traffic.get('output_observed_pps'),1)}",note="pps over the last capture-sample interval; provisional"),
+        dict(label="Last input / output pps", value=f"{fmt(traffic.get('input_observed_pps'),1)} / {fmt(traffic.get('output_observed_pps'),1)}",note="Last capture interval; may be zero after sending. Provisional."),
         dict(label="Pending output matches", value=fmt(traffic.get("pending")), note="Not confirmed path non-delivery"),
     ])
     rows = sample_rows(snapshot)
     if any(row["input"] is not None or row["output"] is not None for row in rows):
-        plot(observation_figure(rows,"traffic"),key="live_traffic",height=280)
+        plot(observation_figure(rows,"traffic",target_rate=metadata.get("rate_pps")),key="live_traffic",height=280)
     else:
         empty_panel("Capture observations", "Waiting for real samples; exact native sender statistics arrive only after sending finishes.")
     st.caption(f"Output duplicate observations: {fmt(traffic.get('output_duplicates'))} / Reordering observations: {fmt(traffic.get('output_reordered'))}. Neither is a final capture-integrity verdict.")
+    with st.expander("How to read the traffic graph"):
+        st.markdown("- **X axis:** RAW elapsed seconds since the saved run origin.\n"
+                    "- **Y axis:** matched input/output capture observations per sample interval, in packets per second—not a qualified throughput result.\n"
+                    "- **Dotted line:** the requested nominal rate, not an achieved-rate measurement.\n"
+                    "- **Phase shading:** only the span of retained warm-up or measurement samples, not exact sender-window boundaries.\n"
+                    "- **Pending matches:** still unreconciled; loss is assessed only after drain and capture checks.")
     section_header("CPU & resident memory", "OS-accounted one-core CPU percentages are PROVISIONAL / DEMO ONLY. Resources are collected during measurement, not warm-up or drain. Cards retain last-known samples; charts use actual resource-sample times.")
     metric_row([
         dict(label="BMv2 CPU",value=fmt(bcpu,1,"%"),note="100% = one accounted core; can exceed 100%",tone="blue"),
@@ -228,17 +303,14 @@ def render_evidence(evidence):
                 plot(observation_figure(rows,kind),key="live_" + kind,height=300)
             else:
                 empty_panel("CPU accounting" if kind == "cpu" else "Resident memory", "Not collected until the measurement phase. No replacement values are invented.")
+    with st.expander("How to read CPU and memory"):
+        st.markdown("- **X axis:** the actual resource observation's RAW elapsed time; unavailable phases are not filled in.\n"
+                    "- **CPU:** OS-accounted percentage of one core; 100% is one core and values may exceed 100%. It remains provisional and is not isolated RF execution time.\n"
+                    "- **RSS:** sampled resident memory in MiB, not a guaranteed exact peak.\n"
+                    "- **Runner:** includes the collection/monitoring worker; its resource use is not BMv2 inference overhead.")
     _health(snapshot,trial)
     if trial:
-        section_header("Completed trial", "Final packet/decision counts are separate from provisional observation graphs.")
-        metrics, gates = trial.get("metrics",{}), trial.get("metric_validity",{})
-        packet_valid = gates.get("packet_accounting") is True
-        decision_valid = gates.get("classification_counts") is True
-        metric_row([
-            dict(label="Final sent / delivered",value=f"{fmt(metrics.get('packets_sent'))} / {fmt(metrics.get('packets_received'))}",note="Supported accounting" if packet_valid else "Raw observations: packet accounting INVALID or unverified"),
-            dict(label="RF decisions / expected",value=f"{fmt(metrics.get('decisions'))} / {fmt(metrics.get('expected_decisions'))}",note="Verified completion, not accuracy" if decision_valid else "Not applicable or accounting unverified"),
-            dict(label="Decision completion",value=fmt(counter_completion(trial),1,"%"),note="Synthetic traffic has no ground-truth activity label"),
-        ])
+        metrics = trial.get("metrics",{})
         with st.expander("Final sender statistics / provisional rates"):
             st.caption("Exact successful sender count and RAW timing are now available. Independent qualification is still required for research rate claims.")
             st.json({key:metrics.get(key) for key in ("packets_sent","raw_window_seconds","offered_pps","delivered_pps","bmv2_cpu_one_core_percent","runner_cpu_one_core_percent")},expanded=False)

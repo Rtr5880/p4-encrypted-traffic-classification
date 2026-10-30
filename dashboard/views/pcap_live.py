@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import math
 import os
+from html import escape
 from pathlib import Path
 import sys
 import streamlit as st
@@ -12,10 +13,12 @@ from dashboard.components import (
 )
 from dashboard.live_evidence import read_live
 from dashboard.views.live import resource_point, observation_figure
+from dashboard.live_presentation import install_live_style, render_journey
 
 CLASSES = ("CHAT", "FT", "MAIL", "P2P", "STREAMING", "VOIP")
 B_FEATURES = ("size_min","size_max","size_sum","iat_min","iat_max","iat_sum")
 C_FEATURES = B_FEATURES + ("reverse_packet_count","direction_change_count")
+RF_SCORE_MAX = 10 * 2**24
 TOOLS = Path(__file__).resolve().parents[2] / "tools"
 if str(TOOLS) not in sys.path:
     sys.path.insert(0,str(TOOLS))
@@ -57,7 +60,7 @@ def result_issues(result, model):
     leaves,scores=result.get("leaf_ids"),result.get("scores")
     if not isinstance(leaves,list) or len(leaves)!=10 or any(type(v)is not int or v<0 for v in leaves):
         errors.append("Ten actual leaf IDs are unavailable or invalid")
-    if not isinstance(scores,list) or len(scores)!=6 or any(type(v)is not int or v<0 for v in scores):
+    if not isinstance(scores,list) or len(scores)!=6 or any(type(v)is not int or v<0 or v>RF_SCORE_MAX for v in scores):
         errors.append("Six actual integer class-score totals are unavailable or invalid")
     if result.get("p4_prediction") not in CLASSES or result.get("python_prediction") not in CLASSES:
         errors.append("Recorded P4/Python predictions are missing or invalid")
@@ -79,8 +82,155 @@ def score_figure(result,model):
         marker_color=[MODEL_COLORS[model] if name==result["p4_prediction"] else "#263c59" for name in CLASSES],
         hovertemplate="%{y}<br>Accumulated fixed-point score: %{x:,.0f}<extra>RF-"+model+"</extra>"))
     fig.update_layout(xaxis_title="Sum of ten leaf class scores (fixed point)",showlegend=False)
+    # Both frozen forests contain ten Q24 trees. Keep raw evidence unchanged
+    # and use one common scale rather than independently autoscaling the pair.
+    fig.update_xaxes(range=[0,RF_SCORE_MAX],tickformat="~s",fixedrange=False)
     fig.update_yaxes(autorange="reversed",gridcolor="rgba(0,0,0,0)")
     return fig
+
+
+def parity_status(result,model):
+    """A completed acquisition or a named status is not itself parity PASS."""
+    if not isinstance(result,dict) or not result or result.get("status")=="collecting":
+        return "PENDING"
+    values=[(result.get("parity") or {}).get(key)
+            for key in ("feature","leaf","score","prediction")]
+    if any(value is False for value in values):
+        return "FAIL"
+    if result.get("status")=="classified_unverified":
+        return "PENDING"
+    if result_issues(result,model):
+        return "INCOMPLETE"
+    return "PASS" if all(value is True for value in values) else "PENDING"
+
+
+def pcap_journey(results,progress,monitoring,models,evidence_status):
+    """Show only stages supported by recorded model observations/results."""
+    active=evidence_status not in ("completed","failed","interrupted","cancelled","stale","corrupt")
+    steps=[]
+    for model in models:
+        result=results.get(model) or {}
+        observed=count((progress.get(model) or {}).get("eligible_packets"))
+        observed=observed if observed is not None and observed<=8 else None
+        complete=bool(result and result.get("status") not in ("collecting","classified_unverified")
+                      and not result_issues(result,model))
+        decision=complete or result.get("status")=="classified_unverified"
+        row=monitoring.get(model) or {}
+        started=bool(observed is not None or result or row.get("phase"))
+        prefix_state="observed" if decision or observed==8 else "active" if active and started else "pending"
+        prefix_detail=(f"{observed}/8 switch-reported" if observed is not None else
+                       "Packet-eight report recorded" if decision else "No packet count assumed")
+        verdict=parity_status(result,model)
+        verify_state=("observed" if verdict=="PASS" else "failed" if verdict=="FAIL" else
+                      "warning" if verdict=="INCOMPLETE" else "active" if active and decision else "pending")
+        steps.extend([
+            {"label":"RF-"+model+" · collect","state":prefix_state,"detail":prefix_detail},
+            {"label":"RF-"+model+" · decision","state":"observed" if decision else
+             "active" if active and observed==8 else "pending",
+             "detail":"Actual packet-eight event" if decision else "Waiting for a recorded event"},
+            {"label":"RF-"+model+" · parity","state":verify_state,
+             "detail":"Features · leaves · scores · class: "+verdict},
+        ])
+    return steps
+
+
+def packet_strip_rows(source):
+    """Eight source positions, not eight fabricated switch observations."""
+    saved={}
+    for entry in source.get("packet_summary") or []:
+        if not isinstance(entry,dict):
+            continue
+        position=entry.get("position")
+        if type(position)is int and 1<=position<=8 and position not in saved:
+            saved[position]=entry
+    frames=source.get("original_frames") or []
+    rows=[]
+    for position in range(1,9):
+        entry=saved.get(position,{})
+        direction=entry.get("direction")
+        if type(direction)is bool:
+            direction=None
+        direction="F" if direction in ("F","forward",0) else "R" if direction in ("R","reverse",1) else None
+        frame=entry.get("original_frame",frames[position-1] if len(frames)>=position else None)
+        size=count(entry.get("ip_size_bytes"))
+        rows.append({"position":position,"original_frame":count(frame),"ip_size_bytes":size,
+                     "direction":direction,"capture_offset_us":count(entry.get("capture_offset_us")),
+                     "trigger":position==8})
+    return rows
+
+
+def _packet_strip(source,progress,results,models):
+    st.markdown("#### The eight-packet observation window")
+    st.caption("Source packet metadata, not an animated arrival timeline. F = first eligible sender; R = peer. "
+               "Packet 8 is the inference trigger for an admitted instance.")
+    st.markdown("""<style>
+      .etc-live-packet-strip{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;margin:12px 0}
+      .etc-live-packet{background:#111d30;border:1px solid #293d56;border-radius:10px;padding:12px 8px;min-width:0;text-align:center}
+      .etc-live-packet.trigger{border-color:#2dd4bf;background:#102b31}
+      .etc-live-packet strong{display:block;color:#e8eef8;font-size:15px;margin-bottom:6px}
+      .etc-live-packet span{display:block;color:#acbfd3;font-size:12px;overflow-wrap:anywhere;margin-top:4px}
+      .etc-live-packet .etc-live-trigger{color:#5eead4;font-weight:600}
+      @media(max-width:1050px){.etc-live-packet-strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
+      @media(max-width:420px){.etc-live-packet-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    </style>""",unsafe_allow_html=True)
+    cards=[]
+    for row in packet_strip_rows(source):
+        direction=row["direction"] or "Direction unavailable"
+        size=(number(row["ip_size_bytes"])+" IP bytes" if row["ip_size_bytes"] is not None else "Size unavailable")
+        frame=("Frame "+number(row["original_frame"]) if row["original_frame"] is not None else "Frame unavailable")
+        cards.append('<div class="etc-live-packet'+(' trigger' if row["trigger"] else '')+'">'
+                     '<strong>Packet '+str(row["position"])+"</strong><span>"+escape(direction)+"</span><span>"+
+                     escape(size)+"</span><span>"+escape(frame)+"</span>"+
+                     ('<span class="etc-live-trigger">Inference trigger</span>' if row["trigger"] else '')+'</div>')
+    st.markdown('<div class="etc-live-packet-strip">'+''.join(cards)+'</div>',unsafe_allow_html=True)
+    observations=[]
+    for model in models:
+        observed=count((progress.get(model) or {}).get("eligible_packets"))
+        if observed is not None and observed<=8:
+            observations.append(f"RF-{model}: {observed}/8 switch-reported eligible packets")
+        elif results.get(model) and results[model].get("status")=="classified_unverified":
+            observations.append("RF-"+model+": decision observed; verification pending")
+        elif results.get(model) and not result_issues(results[model],model):
+            observations.append("RF-"+model+": packet-eight decision recorded")
+        else:
+            observations.append("RF-"+model+": switch progress not yet available")
+    st.caption("Observed progress — "+" · ".join(observations))
+
+
+def _outcome_summary(source,results,models):
+    """Compact interpretation first; no whole-run or semantic accuracy PASS."""
+    lines=[]
+    for model in models:
+        result=results.get(model)
+        if result and result.get("status")=="classified_unverified":
+            lines.append("RF-"+model+": decision observed / verification pending")
+        elif result and not result_issues(result,model):
+            lines.append("RF-"+model+": "+result["p4_prediction"]+" / Python-P4 parity "+parity_status(result,model))
+        elif result and result.get("status")!="collecting":
+            lines.append("RF-"+model+": intermediate evidence incomplete")
+        else:
+            lines.append("RF-"+model+": awaiting a recorded prediction")
+    if models=="BC":
+        title,interpretation=comparison_interpretation(results)
+    else:
+        title="Recorded classification outcome"
+        interpretation="The prediction is the deployed forest's activity class, not a verified application identity."
+    notice(title," | ".join(lines)+" "+interpretation,"info")
+    st.caption("Source activity hint: "+str(source.get("capture_activity_hint",source.get("label","Unavailable")))+
+               ". Hint agreement is not independently verified per-flow accuracy.")
+    if models=="BC":
+        st.caption("RF-B and RF-C execute sequentially. The source bytes are the same; actual native IATs may differ. "
+                   "A live prediction difference is not a direction-only ablation.")
+
+
+def _classification_reading_help():
+    with st.expander("How to read predictions, score bars and parity"):
+        st.markdown("- **Score bars:** classes are on the vertical axis; the horizontal axis is the sum of ten actual Q24 leaf scores. "
+                    "Both models use the same 0–167,772,160 scale. The highest total determines the prediction; equal totals choose the lowest class index.\n"
+                    "- **Scores are not calibrated confidence:** these are integer model outputs, not a percentage chance that the activity label is correct.\n"
+                    "- **Four parity checks:** features, tree leaves, score sums and predicted class are compared with Python using each model's observed timing. "
+                    "PASS means implementation agreement on this example, not classification accuracy.\n"
+                    "- **Model inputs:** RF-B uses six size/IAT statistics. RF-C adds reverse-packet and direction-change counts; both P4 builds already maintain directional state.")
 
 
 def feature_comparison(results):
@@ -252,6 +402,13 @@ def _monitoring(row,model,progress,result):
     st.markdown("##### Experiment health")
     st.dataframe([{"Check":key,"Observation":value} for key,value in monitoring_health(row,result).items()],
                  hide_index=True,width="stretch")
+    with st.expander("What these PCAP health observations mean"):
+        st.markdown("- **Packet accounting / counters PASS:** the recorded transport or decision-counter check succeeded; neither is a semantic accuracy score.\n"
+                    "- **PENDING:** the required final observation has not been recorded. Missing evidence is not a passing or zero-valued result.\n"
+                    "- **Native ingress CLEAN:** the saved ingress sequence check was clean; this is not independent clock-rate qualification.\n"
+                    "- **WARNING / FAIL:** inspect the preserved reasons below. Resource warnings do not automatically negate a separately verified classifier result.\n"
+                    "- **Resource graphs:** horizontal position is RAW elapsed seconds from the first resource observation; CPU is OS-accounted percent of one core and RSS is MiB. "
+                    "Only sufficiently sampled actual phases are plotted. This is not isolated RF inference overhead.")
     if row.get("monitoring_errors"):
         notice("Preserved monitoring warnings"," | ".join(map(str,row["monitoring_errors"])),"warning")
     if final.get("errors"):
@@ -355,6 +512,10 @@ def _model(result,model,progress):
     passed=all(value is True for value in verdicts.values())
     st.markdown(pill("Python / P4 parity PASS" if passed else "Parity incomplete or failed","success" if passed else "warning"),
                 unsafe_allow_html=True)
+    st.markdown("".join(pill(label+" "+("PASS" if verdicts[key] is True else "FAIL" if verdicts[key] is False else "PENDING"),
+                              "success" if verdicts[key] is True else "error" if verdicts[key] is False else "warning")
+                         for key,label in (("feature","Features"),("leaf","Leaves"),("score","Scores"),("prediction","Class"))),
+                unsafe_allow_html=True)
     st.caption("Python reference on this run's observed timing: "+result["python_prediction"])
     plot(score_figure(result,model),key="pcap_scores_"+model,height=290)
     with st.expander("Feature vector / ten tree leaves / parity details"):
@@ -385,6 +546,7 @@ def _model(result,model,progress):
 
 
 def render_pcap_evidence(evidence):
+    install_live_style()
     if evidence.status=="corrupt":
         notice("PCAP telemetry integrity failure"," | ".join(evidence.messages)+". No classification data are trusted.","error")
         return
@@ -415,13 +577,16 @@ def render_pcap_evidence(evidence):
     _source(source)
     selected=meta.get("mode","compare")
     models="BC" if selected=="compare" else "B" if selected=="rf_b" else "C"
+    _outcome_summary(source,results,models)
+    render_journey(pcap_journey(results,progress,monitoring,models,evidence.status),
+                   caption="Recorded per-model stages. Unobserved steps remain pending; a completed acquisition is not automatically verified.")
+    _packet_strip(source,progress,results,models)
+    _classification_reading_help()
     for column,model in zip(st.columns(len(models)),models):
         with column:
             _model(results.get(model),model,progress)
     complete=False
     if models=="BC":
-        title,interpretation=comparison_interpretation(results)
-        notice(title,interpretation,"info")
         complete=all(results.get(model) and not result_issues(results[model],model) for model in "BC")
         if complete:
             with st.expander("Compare the native feature vectors",expanded=False):
@@ -441,6 +606,8 @@ def render_pcap_evidence(evidence):
                         hovertemplate="Gap %{x}: %{y:,.0f} us<extra>%{fullData.name}</extra>"))
             fig.update_layout(xaxis_title="Gap between eligible packets (1-7)",yaxis_title="Recorded inter-arrival gap (us)")
             plot(fig,key="pcap_native_timing",height=290)
+            st.caption("Read this chart: gap 1 is between eligible packets 1 and 2, through gap 7 between packets 7 and 8. "
+                       "The vertical axis is inter-arrival microseconds, not packet forwarding delay. Separate model runs may observe different gaps.")
             with st.expander("Exact native timestamp / IAT differences"):
                 st.dataframe(rows,width="stretch",hide_index=True)
                 for model in "BC":
